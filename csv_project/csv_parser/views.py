@@ -57,3 +57,47 @@ class MainPage(LoginRequiredMixin, View):
     def post(self, request):
         pass
 
+
+class AddFile(LoginRequiredMixin, View):
+    login_url = reverse_lazy('login')
+    redirect_field_name = 'next'
+
+    def get(self, request):
+        form = AddFileForm()
+        context = {"form": form}
+        return render(request, "add-file.html", context)
+
+    def post(self, request):
+        form = AddFileForm(request.POST, request.FILES)
+
+        if form.is_valid():
+            server_path = form.cleaned_data['server_path']
+            disk_file = form.cleaned_data['disk_file']
+            # XOR for input fields
+            if not ((server_path and not disk_file) or
+                    (not server_path and disk_file)):
+                raise forms.ValidationError('Please fill only one '
+                                            'of the fields.')
+
+            #
+            # if server_path:
+            #     # create and save File Model!
+            #     new_photo = Photo.objects.create(path=server_path,
+            #                                      file="Server_path",
+            #                                      my_user=request.user)
+            #     new_photo.save()
+            # if disk_file:
+            #     # save files
+            #     new_photo = Photo.objects.create(path="File_path",
+            #                                      file=disk_file,
+            #                                      my_user=request.user)
+            #     new_photo.save()
+
+        # if form not valid
+        else:
+            context = {
+                'message': 'Form not valid!',
+                'form': form,
+            }
+            return render(request, "add-file.html", context)
+        return redirect(reverse_lazy('main-page'))

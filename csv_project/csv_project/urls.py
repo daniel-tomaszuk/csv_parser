@@ -22,4 +22,5 @@ urlpatterns = [
     url(r'^login/', Login.as_view(), name="login"),
     url(r'^logout/', Logout.as_view(), name="logout"),
     url(r'^main-page/', MainPage.as_view(), name="main-page"),
+    url(r'^add-file/', AddFile.as_view(), name="add-file"),
 ]
