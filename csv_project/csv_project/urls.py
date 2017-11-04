@@ -15,7 +15,11 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
+from csv_parser.views import *
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url(r'^login/', Login.as_view(), name="login"),
+    url(r'^logout/', Logout.as_view(), name="logout"),
+    url(r'^main-page/', MainPage.as_view(), name="main-page"),
 ]
