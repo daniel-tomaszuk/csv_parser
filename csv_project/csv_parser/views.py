@@ -10,7 +10,8 @@ from django.contrib.auth import (authenticate, login, logout)
 from django.core.urlresolvers import reverse_lazy
 # from django.contrib import messages
 # from django.contrib.messages import get_messages
-
+import csv
+import io
 
 class Login(FormView):
 
@@ -49,8 +50,13 @@ class MainPage(LoginRequiredMixin, View):
     redirect_field_name = 'next'
 
     def get(self, request):
+        message = ""
+        files = CSVModel.objects.order_by('-creation_date').all()
+        if not len(files):
+            message = "No files in DB to show!"
         context = {
-            "message": 'Main Page!',
+            "message": message,
+            "files": files,
         }
         return render(request, "main-page.html", context)
 
@@ -79,19 +85,44 @@ class AddFile(LoginRequiredMixin, View):
                 raise forms.ValidationError('Please fill only one '
                                             'of the fields.')
 
-            #
             # if server_path:
             #     # create and save File Model!
             #     new_photo = Photo.objects.create(path=server_path,
             #                                      file="Server_path",
             #                                      my_user=request.user)
             #     new_photo.save()
-            # if disk_file:
-            #     # save files
-            #     new_photo = Photo.objects.create(path="File_path",
-            #                                      file=disk_file,
-            #                                      my_user=request.user)
-            #     new_photo.save()
+            if disk_file:
+                data = []
+                csv_file = request.FILES['disk_file']
+                # if there is problem with utf-8 -> add .strip()
+                decoded_file = csv_file.read().decode('ascii', 'ignore')
+                io_string = io.StringIO(decoded_file)
+                for line in csv.reader(io_string, delimiter=';',
+                                       quotechar='|'):
+                    data.append(line)
+
+
+
+                # data = []
+                # with open(disk_file, newline='') as csvfile:
+                #     reader = csv.reader(csvfile, delimiter=' ',
+                #                         quotechar='|')
+                # for row in reader:
+                #     data.append(row)
+                #     # print(', '.join(row))
+                context = {
+                    "data": data,
+                }
+
+                return render(request, "add-file.html", context)
+
+
+
+                # # save files
+                # new_photo = Photo.objects.create(path="File_path",
+                #                                  file=disk_file,
+                #                                  my_user=request.user)
+                # new_photo.save()
 
         # if form not valid
         else:

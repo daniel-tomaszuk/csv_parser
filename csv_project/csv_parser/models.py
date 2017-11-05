@@ -26,6 +26,7 @@ class CSVFile(models.Model):
 
 class CSVModel(models.Model):
     user = models.ForeignKey(User)
+    file = models.ForeignKey(CSVFile, default=None)
     creation_date = models.DateTimeField(auto_now=True)
     field_1 = models.CharField(max_length=100)
     field_2 = models.CharField(max_length=100)
@@ -38,7 +39,14 @@ class CSVModel(models.Model):
     field_9 = models.CharField(max_length=100)
     field_10 = models.CharField(max_length=100)
 
+    @property
+    def info(self):
+        return "Added: {} by {}".format(self.creation_date
+                                            .strftime("%Y-%m-%d, %H:%M:%S"),
+                                        self.user.username)
 
+    def __str__(self):
+        return "ID:" + str(self.id) + " " + self.info
 
 
 

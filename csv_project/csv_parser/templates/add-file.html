@@ -11,5 +11,12 @@
                 <button type="button">Cancel</button>
         </a>
 </form>
+<table>
+    {% for dat in data %}
+    <tr>
+        <td>{{ dat }} </td>
+    </tr>
+    {% endfor %}
+</table>
 
 {% endblock %}
