@@ -95,7 +95,9 @@ class AddFile(LoginRequiredMixin, View):
                 data = []
                 csv_file = request.FILES['disk_file']
                 # if there is problem with utf-8 -> add .strip()
-                decoded_file = csv_file.read().decode('ascii', 'ignore')
+                # decoded_file = csv_file.read().decode('ascii', 'ignore')
+                decoded_file = csv_file.read().decode('ISO-8859-1')
+
                 io_string = io.StringIO(decoded_file)
                 for line in csv.reader(io_string, delimiter=';',
                                        quotechar='|'):
