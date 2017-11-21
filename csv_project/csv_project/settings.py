@@ -71,7 +71,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'csv_project.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
@@ -120,3 +119,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# check for local settings
+# Override production variables if ~/bashrc: DJANGO_DEVELOPMENT
+# env variable is set
+if os.environ.get('DJANGO_DEV') is not None:
+    print("USING LOCAL SETTINGS")
+    from csv_project.local_settings import *
+else:
+    print("USING MAIN SETTINGS")
