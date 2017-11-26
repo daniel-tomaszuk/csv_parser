@@ -81,6 +81,7 @@ class MainPage(LoginRequiredMixin, View):
 
 
 class AddFile(LoginRequiredMixin, View):
+    ##
     login_url = reverse_lazy('login')
     redirect_field_name = 'next'
 
