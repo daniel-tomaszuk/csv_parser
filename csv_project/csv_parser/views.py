@@ -10,8 +10,10 @@ from django.contrib.auth import (authenticate, login, logout)
 from django.core.urlresolvers import reverse_lazy
 # from django.contrib import messages
 # from django.contrib.messages import get_messages
+
 import csv
 import io
+
 
 class Login(FormView):
 
@@ -50,18 +52,32 @@ class MainPage(LoginRequiredMixin, View):
     redirect_field_name = 'next'
 
     def get(self, request):
-        message = ""
+        form = MainPageForm()
         files = CSVModel.objects.order_by('-creation_date').all()
         if not len(files):
             message = "No files in DB to show!"
         context = {
             "message": message,
+            "form": form,
             "files": files,
         }
         return render(request, "main-page.html", context)
 
     def post(self, request):
-        pass
+        form = MainPageForm(request.POST)
+        if form.is_valid():
+            filter_by = form.cleaned_data['status']
+            context = {
+                "message": filter_by,
+                "form": form,
+            }
+            return render(request, "main-page.html", context)
+        else:
+            context = {
+                "message": "Error",
+                "form": form,
+            }
+            return render(request, "main-page.html", context)
 
 
 class AddFile(LoginRequiredMixin, View):

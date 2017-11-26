@@ -1,10 +1,9 @@
 {% extends "base.html" %}
 {% block content %}
-
+<h2>{{ message }}</h2>
 <form action="{% url 'add-file' %}" method="post"
       enctype="multipart/form-data">
 		{%	csrf_token	%}
-        <h2>{{ message }}</h2>
         {{  form.as_p   }}
         <input type="submit" value="Add CSV file!"/>
         <a class="link" href="{% url 'main-page'%}">

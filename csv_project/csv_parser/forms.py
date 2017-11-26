@@ -23,3 +23,28 @@ class AddFileForm(forms.Form):
                                                         'one of the fields'})
 
         return self.cleaned_data
+
+
+STATUS_CHOICES = (
+    (1, ("Not relevant")),
+    (2, ("Review")),
+    (3, ("Maybe relevant")),
+    (4, ("Relevant")),
+    (5, ("Leading candidate"))
+)
+
+choices = (
+    (1, ("Test_1")),
+    (2, ("Test_2")),
+    (3, ("Test_3")),
+    (4, ("Test_4")),
+    (5, ("Test_5"))
+)
+
+
+class MainPageForm(forms.Form):
+
+    status = forms.ChoiceField(choices=choices, label="Filter by:",
+                               widget=forms.Select(
+                                   attrs={'onchange': 'this.form.submit();'}))
+
